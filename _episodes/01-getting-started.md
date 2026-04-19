@@ -1,24 +1,38 @@
 ---
 title: "Getting started with Nextflow"
-teaching: 40
+teaching: 50
 exercises: 10
 questions:
-- "What is the shell?"
-- "What is a command shell"
-- "Why would I use one?"
+- "What is a workflow and what are workflow management systems?"
+- "Why should I use a workflow management system?"
+- "What is Nextflow?"
+- "What are the main features of Nextflow?"
+- "What are the main components of a Nextflow script?"
+- "How do I run a Nextflow script?"
 objectives:
-- "Explain how the shell relates to the keyboard, the screen, the operating system, and users’ programs."
-- "Explain when and why command-line interfaces should be used instead of graphical interfaces."
+- "Understand what a workflow management system is."
+- "Understand the benefits of using a workflow management system."
+- "Explain the benefits of using Nextflow as part of your bioinformatics workflow."
+- "Explain the components of a Nextflow script."
+- "Run a Nextflow script."
 keypoints:
-- "A shell is a program whose primary purpose is to read commands and run other programs."
-- "This lesson uses Bash, the default shell in many implementations of Unix."
-- "Programs can be run in Bash by entering commands at the command-line prompt."
-- "The shell’s main advantages are its high action-to-keystroke ratio, its support for automating repetitive tasks, and its capacity to access networked machines."
-- "A significant challenge when using the shell can be knowing what commands need to be run and how to run them."
+- "A workflow is a sequence of tasks that process a set of data."
+- "A workflow management system (WfMS) is a computational platform that provides an infrastructure for the set-up, execution and monitoring of workflows."
+- "Nextflow is a workflow management system that comprises both a runtime environment and a domain specific language (DSL)."
+- "Nextflow scripts comprise of channels for controlling inputs and outputs, and processes for defining workflow tasks."
+- "You run a Nextflow script using the `nextflow run` command."
 ---
 
-## Background
-Humans and computers commonly interact in many different ways, such as through a keyboard and mouse, touch screen interfaces, or using speech recognition systems. The most widely used way to interact with personal computers is called a graphical user interface (GUI). With a GUI, we give instructions by clicking a mouse and using menu-driven interactions.
+## Workflows
+Analysing data involves a sequence of tasks, including gathering, cleaning, and processing data. This sequence of tasks is called a workflow or a pipeline. These workflows typically require executing multiple software packages, sometimes running on different computing environments, such as a desktop or a compute cluster. Traditionally these workflows have been joined together in scripts using general purpose programming languages such as Bash or Python.
+
+<center>
+    <img src="https://gatk.broadinstitute.org/hc/theming_assets/01HZPKW2HXTR2JFMVD55S4VNTY" width="200">
+    <br>
+    <em> An example of a simple bioinformatics RNA-Seq pipeline. </em>
+</center>
+
+<br>
 
 While the visual aid of a GUI makes it intuitive to learn, this way of delivering instructions to a computer scales very poorly. Imagine the following task: for a literature search, you have to copy the third line of one thousand text files in one thousand different directories and paste it into a single file. Using a GUI, you would not only be clicking at your desk for several hours, but you could potentially also commit an error in the process of completing this repetitive task. This is where we take advantage of the Unix shell. The Unix shell is both a command-line interface (CLI) and a scripting language, allowing such repetitive tasks to be done automatically and fast. With the proper commands, the shell can repeat tasks with or without some modification as many times as we want. Using the shell, the task in the literature example can be accomplished in seconds
 
