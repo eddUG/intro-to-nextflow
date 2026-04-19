@@ -63,6 +63,8 @@ bioinformatics workflow managers. Nat Methods 18, 1161–1168 (2021). https://do
 
 <br>
 <center>
+![Overview of Nextflow core features](fig/execution_abstraction.png){alt="Infographic illustrating the components and supported platforms of a nextflow pipeline. The top section 'nextflow pipeline' is divided into three: writing code in any language, orchestrating tasks with dataflow programming, and defining software dependencies via containers and version control. Below is the nextflow runtime section for task orchestration and execution, followed by supported platforms including AWS, Google Cloud, Azure, Grid Engine, Slurm, HTCondor, Kubernetes, and PBS Works."}
+    
 <img src="{{ site.baseurl }}/fig/execution_abstraction.png" alt="Infographic illustrating the components and supported platforms of a nextflow pipeline. The top section 'nextflow pipeline' is divided into three: writing code in any language (represented by R, Python, and Bash icons), orchestrating tasks with dataflow programming (represented by papers marked 'Data Flow' and 'Programming Model'), and defining software dependencies via containers (represented by Conda, Docker, and Singularity icons) and built-in version control with Git (represented by Git, GitHub, GitLab, and Bitbucket icons). Below, in the 'nextflow runtime' section, is 'Task orchestration and execution'. Arrows point downwards to the 'Supported Platforms' section, showcasing various platforms such as AWS, Google Cloud, Azure, Grid Engine, Slurm, HTCondor, Platform Computing, Kubernetes, and PBS Works." width="600">
 <br>
 <em> Overview of Nextflow core features. </em>
