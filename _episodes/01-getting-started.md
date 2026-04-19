@@ -63,7 +63,7 @@ bioinformatics workflow managers. Nat Methods 18, 1161–1168 (2021). https://do
 
 <br>
 <center>
-<img src="./fig/execution_abstraction.png" alt= "Infographic illustrating the components and supported platforms of a nextflow pipeline. The top section 'nextflow pipeline' is divided into three: writing code in any language (represented by R, Python, and Bash icons), orchestrating tasks with dataflow programming (represented by papers marked 'Data Flow' and 'Programming Model'), and defining software dependencies via containers (represented by Conda, Docker, and Singularity icons) and built-in version control with Git (represented by Git, GitHub, GitLab, and Bitbucket icons). Below, in the 'nextflow runtime' section, is 'Task orchestration and execution'. Arrows point downwards to the 'Supported Platforms' section, showcasing various platforms such as AWS, Google Cloud, Azure, Grid Engine, Slurm, HTCondor, Platform Computing, Kubernetes, and PBS Works." width="600">
+<img src="./fig/execution_abstraction.png" alt="Infographic illustrating the components and supported platforms of a nextflow pipeline. The top section 'nextflow pipeline' is divided into three: writing code in any language (represented by R, Python, and Bash icons), orchestrating tasks with dataflow programming (represented by papers marked 'Data Flow' and 'Programming Model'), and defining software dependencies via containers (represented by Conda, Docker, and Singularity icons) and built-in version control with Git (represented by Git, GitHub, GitLab, and Bitbucket icons). Below, in the 'nextflow runtime' section, is 'Task orchestration and execution'. Arrows point downwards to the 'Supported Platforms' section, showcasing various platforms such as AWS, Google Cloud, Azure, Grid Engine, Slurm, HTCondor, Platform Computing, Kubernetes, and PBS Works." width="600">
 <br>
 <em> Overview of Nextflow core features. </em>
 </center>
@@ -120,7 +120,7 @@ channel has three elements, three independent instances (tasks) of that process
 are run in parallel. Each task generates an output, which is passed to another
 channel and used as input for the next process.
 
-<p align="center">   <img src="./fig/channel-process_fqc.png" alt="Diagram depicting part of a bioinformatics data processing workflow. On the left, there is a 'channel' labeled 'samples' containing three items: Fastq1, Fastq2, and Fastq3. This channel flows into a 'process' called 'fastqc' represented by a rounded rectangle containing the command 'fastqc -o out ${reads}'. The output of this process goes into a channel named 'out_ch', which lists 'outdir' three times as its contents. This channel then flows into a channel operator 'collect' and then into  another 'process' called 'multiqc', indicated by a rounded rectangle with the command 'multiqc -o mqc_res .'. The output of 'multiqc' goes into a channel called 'mqc_ch', which also lists 'outdir' one time." width="700">   <br>   <em> Nextflow process flow diagram. </em>
+<p align="center">   <img src="fig/channel-process_fqc.png" alt="Diagram depicting part of a bioinformatics data processing workflow. On the left, there is a 'channel' labeled 'samples' containing three items: Fastq1, Fastq2, and Fastq3. This channel flows into a 'process' called 'fastqc' represented by a rounded rectangle containing the command 'fastqc -o out ${reads}'. The output of this process goes into a channel named 'out_ch', which lists 'outdir' three times as its contents. This channel then flows into a channel operator 'collect' and then into  another 'process' called 'multiqc', indicated by a rounded rectangle with the command 'multiqc -o mqc_res .'. The output of 'multiqc' goes into a channel called 'mqc_ch', which also lists 'outdir' one time." width="700">   <br>   <em> Nextflow process flow diagram. </em>
 </p>
 
 ## Workflow execution
@@ -155,7 +155,7 @@ Your first script
 We begin with a minimal Nextflow script to verify that our environment is working and to introduce the basic structure of a workflow.
 
 Create a file named hello.nf in your working directory and copy the following code:
-
+```groovy
 #!/usr/bin/env nextflow
 
 nextflow.enable.dsl=2
@@ -174,6 +174,8 @@ process SAY_HELLO {
 workflow {
     SAY_HELLO()
 }
+```
+
 Understanding the script
 
 This script contains the following components:
@@ -186,7 +188,7 @@ Running the script
 
 To execute the workflow, run:
 ```bash
-$ nextflow run hello.nf
+nextflow run hello.nf
 ```
 
 You should see output similar to:
@@ -231,11 +233,6 @@ Create a file named inspect_reads.nf and copy the following code:
 #!/usr/bin/env nextflow
 
 nextflow.enable.dsl=2
-```
-
-#!/usr/bin/env nextflow
-
-nextflow.enable.dsl=2
 
 params.samplesheet = "data/samplesheet/samplesheet.local.csv"
 
@@ -275,6 +272,7 @@ workflow {
 
     INSPECT_READS(reads_ch)
 }
+```
 
 Understanding the script
 
@@ -363,23 +361,23 @@ ls results/
 ```
 
 You should see subdirectories such as:
-
+```
 merged_fastq/
 fastqc/
 bam/
 qc/
 multiqc/
+```
 
 Each directory corresponds to the output of a different stage in the workflow.
 
 Understanding what happened
 
 Although we have not yet examined the workflow code in detail, Nextflow has:
-
-executed multiple processes
-passed data between them
-tracked all intermediate outputs
-organized final outputs in a structured directory
+- executed multiple processes
+- passed data between them
+- tracked all intermediate outputs
+- organized final outputs in a structured directory
 
 Inspecting execution logs
 ```bash
@@ -387,10 +385,9 @@ less .nextflow.log
 ```
 
 This file contains:
-
-execution details
-commands run
-task-level information
+- execution details
+- commands run
+- task-level information
 
 Inspecting task-level execution
 ```bash
@@ -399,7 +396,7 @@ ls work/
 
 Each directory corresponds to a single execution of a process task, just as in previous examples, but now across multiple workflow steps.
 
-Re-running the workflow
+## Re-running the workflow
 
 Run the pipeline again with:
 ```bash
@@ -407,9 +404,8 @@ nextflow run main.nf -resume
 ```
 
 You will observe that:
-
-completed tasks are not re-run
-Nextflow resumes from the last successful step
+- completed tasks are not re-run
+- Nextflow resumes from the last successful step
 
 > ## Key concept
 >
