@@ -68,13 +68,11 @@ Run:
 nextflow run channel_demo.nf
 ```
 
-> ##   What happens?
+> ## What happens? 
 >
-> >
-> > The channel contains three values: 1, 2, 3
-> > Each value is printed using `.view()`
-> {: .solution}
-{: .challenge}
+> The channel contains three values: 1, 2, 3
+> Each value is printed using `.view()`
+{: .callout}
 
 ## Working with a Samplesheet
 
@@ -124,15 +122,15 @@ Run:
 nextflow run parse_samplesheet.nf
 ```
 
-> ##  What do you observe?
+> ## What do you observe? 
 >
-> > Each row becomes a tuple:
-> > ```
-> > (sample_id, read1, read2)
-> > ```
-> > Each tuple represents **one lane-level input**
-> {: .solution}
-{: .challenge}
+> Each row becomes a tuple:
+>  ```
+> (sample_id, read1, read2)
+>  ```
+> Each tuple represents **one lane-level input**
+{: .callout}
+
 
 ## Paired-End Reads
 
@@ -194,20 +192,19 @@ Run:
 nextflow run group_lanes.nf
 ```
 
-> ##  What changed?
+> ## What changed? 
 >
-> > Before grouping:
-> > ```
-> > (sample1, R1_L001, R2_L001)
-> > (sample1, R1_L002, R2_L002)
-> > (sample1, R1_L003, R2_L003)
-> > ```
-> > After grouping:
-> > ```
-> > (sample1, [R1_L001, R1_L002, R1_L003], [R2_L001, R2_L002, R2_L003])
-> > ```
-> {: .solution}
-{: .challenge}
+>  Before grouping:
+> ```
+> (sample1, R1_L001, R2_L001)
+> (sample1, R1_L002, R2_L002)
+> (sample1, R1_L003, R2_L003)
+> ```
+> After grouping:
+> ```
+> (sample1, [R1_L001, R1_L002, R1_L003], [R2_L001, R2_L002, R2_L003])
+> ```
+{: .callout}
 
 
 > ## Key concept
@@ -286,13 +283,11 @@ cd work/<hash>/
 ls
 ```
 
-> ##  What do you observe?
+> ## What do you observe?
 >
-> > Fewer process executions (one per sample)
-> > Output FASTQ files are merged
-> {: .solution}
-{: .challenge}
-
+> Fewer process executions (one per sample)
+> Output FASTQ files are merged
+{: .callout}
 
 ## Execution Behavior
 
