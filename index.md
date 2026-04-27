@@ -52,19 +52,14 @@ Workflow management is fundamental to modern genomics, where analyses involve mu
 >
 > This workshop is organized into progressive sessions:
 >
-> **Session 1:**  
-> Introduction to workflows and Nextflow. 
+> **Session 1:**  Introduction to workflows and Nextflow. 
 >
-> **Session 2:**  
-> Working with data in Nextflow: channels, grouping and merging.
+> **Session 2:**  Working with data in Nextflow: channels, grouping and merging.
 >
-> **Session 3:**  
-> Building workflows using processes: QC, alignment and BAM processing.
+> **Session 3:**  Building workflows using processes: QC, alignment and BAM processing.
 >
-> **Session 4:**  
-> Reproducibility and execution environments: parameters, profiles and containers.
+> **Session 4:**  Reproducibility and execution environments: parameters, profiles and containers.
 >
-> **Session 5:**  
-> Scaling workflows and mapping to real-world pipelines (the MalariaGEN SNP genotyping).
+> **Session 5:**  Scaling workflows and mapping to real-world pipelines (the MalariaGEN SNP genotyping).
 {: .callout}
 
