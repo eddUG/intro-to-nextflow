@@ -67,8 +67,10 @@ Run:
 ```bash
 nextflow run channel_demo.nf
 ```
-> ##  What happens?
+
+> ##   What happens?
 >
+> >
 > > The channel contains three values: 1, 2, 3
 > > Each value is printed using `.view()`
 > {: .solution}
