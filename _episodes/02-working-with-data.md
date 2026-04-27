@@ -37,18 +37,27 @@ for file in *.fastq.gz; do
 done
 ```
 
-In Nextflow, we don’t write loops. Instead, we describe **data as a stream**, and Nextflow handles iteration automatically.
+In Nextflow, we don’t write loops. Instead, we describe data as a stream and Nextflow handles iteration automatically. 
+Instead of explicitly looping over files, we define the data and let Nextflow determine how to process it.
+This shift, from writing loops to shaping data, is one of the most important ideas in Nextflow.
+
 
 ## What is a Channel?
 
-A **channel** is a stream of data items.
+A channel is a stream of data items.
 
 A channel can contain:
 - file paths
 - values
 - tuples (structured data)
 
-Each item in a channel triggers **one execution of a process**.
+Each item in a channel triggers one execution of a process.
+
+> You can think of a channel as a queue of inputs flowing through your workflow.
+
+This means:
+
+> the number of times a process runs is determined entirely by the data in the channel.
 
 ## Demo 1: A Simple Channel
 
@@ -72,7 +81,22 @@ nextflow run channel_demo.nf
 >
 > The channel contains three values: 1, 2, 3
 > Each value is printed using `.view()`
+> 
+> ## Note
+> The .view() operator is extremely useful for inspecting the contents of a channel during workflow development.
 {: .callout}
+
+## Optional: Channels from Files
+
+Channels are often created from file patterns:
+
+```nextflow
+
+workflow {
+    Channel.fromPath("data/fastq/*.fastq.gz").view()
+}
+```
+This approach is useful when working directly with files. However, in this training we will use a samplesheet which provides more structure and flexibility.
 
 ## Working with a Samplesheet
 
@@ -91,7 +115,13 @@ Each row represents:
 
 > A paired-end sequencing run (lane)
 
-## Demo 2: Parsing the Samplesheet
+This means:
+
+> Each row corresponds to one independent unit of work.
+
+## Demo 2: Parsing the samplesheet
+
+In this step, we convert the samplesheet into a channel that Nextflow can use.
 
 Create `parse_samplesheet.nf`:
 
@@ -128,13 +158,14 @@ nextflow run parse_samplesheet.nf
 >  ```
 > (sample_id, read1, read2)
 >  ```
-> Each tuple represents **one lane-level input**
+> Each tuple represents one lane-level input
 {: .callout}
 
+This transformation is important because it turns raw metadata into structured inputs that Nextflow can process.
 
-## Paired-End Reads
+## Paired-end reads
 
-Each row already represents a **paired-end dataset**:
+Each row already represents a paired-end dataset:
 - `read1` → forward reads
 - `read2` → reverse reads
 
@@ -143,7 +174,9 @@ In Nextflow, we treat them as a unit:
 ```nextflow
 tuple(sample_id, read1, read2)
 ```
-## The Problem: Lane-Level Data
+This ensures that both files are always processed together in downstream steps.
+
+## The problem: Lane-level data
 
 Each `sample_id` appears multiple times:
 - sample1 -> lane 1
@@ -154,13 +187,22 @@ Currently:
 
 > Nextflow processes each row independently
 
-## The Goal: Sample-Level Processing
+This means:
+
+> Each sequencing lane is treated as a separate task
+
+## The goal: sample-level processing
+
+However, in most analyses, we are interested in samples, not lanes.
 
 We want to:
+
 - group all rows for the same sample
 - treat them as one unit
 
-## Demo 3: Grouping by Sample
+This requires restructuring our data before passing it to downstream processes
+
+## Demo 3: Grouping by sample
 
 Create `group_lanes.nf`:
 
@@ -206,16 +248,18 @@ nextflow run group_lanes.nf
 > ```
 {: .callout}
 
-
 > ## Key concept
 >
-> One channel item now represents one **sample**, not one lane.
+> One channel item now represents one sample, not one lane.
 {: .callout}
 
+This transformation changes how the workflow executes: instead of running once per lane, it will now run once per sample.
 
 ## Merging Lanes
 
 Now that we have grouped data, we can merge FASTQ files.
+
+> Merging combines sequencing data from multiple lanes into a single dataset per sample.
 
 ## Demo 4: Merge FASTQ Files
 
@@ -270,7 +314,7 @@ Run:
 nextflow run merge_lanes.nf
 ```
 
-## Inspect Results
+## Inspect results
 
 ```bash
 ls work/
@@ -289,7 +333,8 @@ ls
 > Output FASTQ files are merged
 {: .callout}
 
-## Execution Behavior
+
+## Execution behavior
 
 | Stage           | Execution           |
 | --------------- | ------------------- |
@@ -299,11 +344,10 @@ ls
 
 > ## Key concept
 >
-> Nextflow tracks intermediate results and enables reproducible and efficient re-execution of workflows.
-> Channels carry data
-> Each item = one task
-> Data structure determines execution
-> Grouping changes workflow behavior
+> - Channels carry data
+> - Each item = one task
+> - Data structure determines execution
+> - Grouping changes workflow behavior
 {: .callout}
 
 ### Exercise 1
