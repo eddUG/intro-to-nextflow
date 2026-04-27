@@ -1,40 +1,85 @@
 ---
 layout: lesson
-title: "Introduction to Unix Shell"
+title: "Introduction to Nextflow for vector genomics"
 root: .
 ---
 
-Welcome to the Shell novice lessons for vector research groups: a domain-adapted 
-rewrite of the Software Carpentry Unix Shell lesson. This workshop is an introduction to 
-using Unix Shell. We can't give an exhaustive course in a few sessions. Instead, we intend
-to give a basic introduction. Use of the shell is fundamental to a wide range of advanced 
-computing tasks. These lessons will introduce you to this powerful tool.
+Welcome to the Nextflow training for vector genomics: an introduction to building and running reproducible bioinformatics workflows.
+
+This workshop introduces the use of **Nextflow** for managing genomic data analysis pipelines. We cannot cover everything in a few sessions. Instead, we aim to provide a strong foundation that will enable you to confidently run and understand workflows, and begin building your own.
+
+Workflow management is fundamental to modern genomics, where analyses involve multiple steps, tools and datasets. These lessons will introduce you to a structured and scalable way to handle such analyses.
 
 > ## Prerequisites
 >
-> This lesson guides you through the basics of file systems and the shell.
-> If you have stored files on a computer at all and recognize the word “file”
-> and either “directory” or “folder” (two common words for the same thing),
-> you’re ready for this lesson.
+> This lesson assumes basic familiarity with:
+>
+> - using a computer and navigating files and folders  
+> - running commands in a terminal (basic Unix shell)  
+>
+> You do **not** need prior programming or workflow experience.
+>
+> If you can recognize a file, a folder, and run simple commands, you are ready.
 {: .prereq}
 
-By the end of the workshop, learners will be able to:
 
-* Navigate the filesystem and manage files/folders safely.
-* Inspect and summarize text data using wildcards and quoting.
-* Build simple data pipelines with pipes and redirection to filter/aggregate records.
-* Automate repetitive work with loops and small shell scripts that accept arguments.
-* Find files and content across a project and capture results to new files.
-* Get help and troubleshoot.
-* Record and organize work for reproducibility.
+## By the end of the workshop, learners will be able to:
+
+* Understand what workflows and workflow management systems are.
+* Run Nextflow workflows on local machines.
+* Interpret workflow outputs, logs, and execution directories.
+* Use samplesheets to drive data analysis workflows.
+* Understand how data flows through workflows using channels.
+* Transform and structure input data (e.g., grouping sequencing lanes by sample).
+* Execute a multi-step genomics workflow (QC, alignment, summarization).
+* Re-run workflows efficiently using Nextflow’s resume functionality.
+* Understand how workflows scale to larger systems (HPC / cloud).
+* Develop a mental model for reproducible and scalable data analysis.
 
 > ## Getting Started
 >
 > To get started, follow the directions in the "[Setup]({{ page.root }}/setup.html)"
-> tab to download data to your computer and follow any installation instructions.
+> tab to:
+>
+> - install Nextflow  
+> - prepare your working environment  
+> - download training data  
+>
+> Please complete setup **before the first session**.
 {: .callout}
 
-> ## For Instructors
+> ## Training Structure
 >
-> If you are teaching this lesson in a workshop, please see the [Guide](guide/).
+> This workshop is organized into progressive sessions:
+>
+> **Session 1:**  
+> Introduction to workflows and Nextflow. 
+>
+> **Session 2:**  
+> Working with data in Nextflow: channels, grouping and merging.
+>
+> **Session 3:**  
+> Building workflows using processes: QC, alignment and BAM processing.
+>
+> **Session 4:**  
+> Reproducibility and execution environments: parameters, profiles and containers.
+>
+> **Session 5:**  
+> Scaling workflows and mapping to real-world pipelines (the MalariaGEN SNP genotyping).
 {: .callout}
+
+## Why Nextflow?
+
+Modern genomics analyses involve:
+
+- multiple datasets (e.g., sequencing lanes, samples)  
+- multiple tools (e.g., QC, alignment, variant calling)  
+- repeated execution across many samples  
+
+Nextflow provides a framework to:
+
+- automate multi-step analyses  
+- ensure reproducibility  
+- scale from laptops to clusters  
+- manage data and execution efficiently  
+
