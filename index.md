@@ -68,18 +68,3 @@ Workflow management is fundamental to modern genomics, where analyses involve mu
 > Scaling workflows and mapping to real-world pipelines (the MalariaGEN SNP genotyping).
 {: .callout}
 
-## Why Nextflow?
-
-Modern genomics analyses involve:
-
-- multiple datasets (e.g., sequencing lanes, samples)  
-- multiple tools (e.g., QC, alignment, variant calling)  
-- repeated execution across many samples  
-
-Nextflow provides a framework to:
-
-- automate multi-step analyses  
-- ensure reproducibility  
-- scale from laptops to clusters  
-- manage data and execution efficiently  
-
