@@ -16,13 +16,16 @@ objectives:
 
 keypoints:
 - "Processes describe computational tasks."
+- "Channels connect processes together."
 - "Outputs from one process become inputs to another."
-- "Complex workflows are built by connecting simple processes."
+- "Complex workflows are built by connecting simple processes (incrementally from simple components)."
+- "Channels carry data. Processes perform work. Workflows connect them together."
+- "Reproducible analyses emerge from the combination of all three."
 ---
 
 # Session 3: Building Analysis Workflows
 
-## Recap from Session 2
+### Recap from Session 2
 
 We transformed:
 
@@ -40,15 +43,19 @@ Today, we attach analysis steps to these sample-level inputs.
 
 A process describes a **single computational task**.
 
-Examples: - FastQC - BWA-MEM - samtools sort - samtools index
+Examples: 
+- FastQC 
+- BWA-MEM 
+- samtools sort 
+- samtools index
 
 > Channels carry data. Processes perform work.
 
-## Demo 1: FastQC
+### Demo 1: FastQC
 
 Goal:
 
-    Merged FASTQs
+        Merged FASTQs
             ↓
           FastQC
             ↓
@@ -135,25 +142,15 @@ tree results/
 ls work/
 ```
 
-Discussion: 
-- How many FastQC tasks ran? 
-- Why?
-
-Discussion: 
-- Is there any new syntax here? 
-- What changed?
-
-## Exercises
-
-1.  Identify the `tag`, `input`, `output`, and `script` stanzas.
-2.  Predict how many FastQC tasks will run.
-3.  Modify the FastQC tag to include the process name.
-4.  Draw the workflow diagram.
-5.  Match each output file to the process that generates it.
-6.  Explain what information flows between successive processes.
+> ## Discussion
+>
+> How many FastQC tasks ran? & Why?
+> Is there any new syntax here? 
+> What changed?
+{: .discussion}
 
 
-# Connecting Processes Together
+## Connecting Processes Together
 
 In the previous section, we introduced the concept of a **process** and implemented our first analysis step using FastQC.
 
@@ -185,7 +182,7 @@ In Nextflow, the outputs emitted by one process become channels that can be cons
 
 
 
-## Demo 2: Alignment with BWA-MEM
+### Demo 2: Alignment with BWA-MEM
 
 The next step in our workflow is to align sequencing reads to a reference genome.
 
@@ -194,7 +191,7 @@ Alignment identifies where each sequencing read originated within the genome.
 Conceptually:
 
 ```text
-Merged FASTQs
+    Merged FASTQs
         ↓
      BWA-MEM
         ↓
@@ -288,8 +285,6 @@ workflow {
 }
 ```
 
-New concept: - reference genome input
-
 Run:
 
 ``` bash
@@ -302,44 +297,22 @@ Inspect:
 head sample.sam
 ```
 
----
-> ## Discussion
+> ### Discussion
 >
 > Which inputs vary from sample to sample?
->
 > Which inputs remain constant for all samples?
+> What information does a SAM file contain?
+> How many BWA tasks ran? why?
+> 
 {: .discussion}
----
 
-> ## What do you observe?
->
-> The SAM file contains many columns.
->
-> Each row corresponds to an aligned sequencing read.
-{: .callout}
-
----
-
-## Discussion
-
-Suppose the workflow receives five samples.
-
-How many BWA tasks will execute?
-
-Explain your reasoning.
-
----
-
-Discussion: 
-- What information does a SAM file contain? 
-- How many BWA tasks ran?
 
 > ## Key concept
 >
 > The structure of the input channel continues to determine workflow execution.
 {: .callout}
 
-## Demo 3: Sorting Alignments
+### Demo 3: Sorting Alignments
 
 SAM files are text-based and relatively inefficient for downstream analysis.
 
@@ -355,7 +328,7 @@ samtools sort
 BAM
 ```
 
-## What is a BAM file?
+### What is a BAM file?
 
 BAM stands for **Binary Alignment/Map**.
 
@@ -367,10 +340,13 @@ Compared with SAM files, BAM files are:
 
 Many downstream tools require BAM files to be sorted by genomic coordinate.
 
+---
 
 Create `03_sort.nf`.
 
 We will extend the workflow developed in Demo 2.
+
+---
 
 ``` nextflow
 nextflow.enable.dsl=2
@@ -463,35 +439,26 @@ Run:
 nextflow run 03_sort.nf
 ```
 
-## Inspecting Results
+#### Inspecting Results
 
-Locate the BAM files.
+Locate the BAM files. Now, inspect alignments:
 
-Inspect alignments:
 ```bash
 samtools view sample.bam | head
 ```
 
-> ## What do you observe?
+> ## Discussion
+>
+> Why do we sort BAM files?
+> 
+{: .discussion}
+
+> ### What do you observe?
 >
 > The BAM file cannot be opened directly with a text editor.
 >
 > `samtools view` allows us to inspect its contents.
 {: .callout}
-
-
-Discussion: 
-- Why do we sort BAM files?
-
-## Discussion
-
-Why do we sort alignments?
-
-Possible answers include:
-
-- downstream requirements,
-- efficient access,
-- compatibility with indexing.
 
 
 > ## Key concept
@@ -521,14 +488,6 @@ What information is passed from BWA to SAMTOOLS_SORT?
 ---
 
 ### Exercise 3
-
-If the BWA process produces outputs for five samples, how many sorting tasks will execute?
-
-Explain your reasoning.
-
----
-
-### Exercise 4
 
 Describe one advantage of BAM files compared with SAM files.
 
@@ -716,17 +675,17 @@ Run:
 nextflow run 04_index.nf
 ```
 
-> ## Discussion
+> ### Discussion
 >
 > Which process generated this BAM file?
->
+> What is the purpose of a BAM index?
 > What information is flowing into SAMTOOLS_INDEX?
+> How many indexing tasks executed? & Why?
+> 
 {: .discussion}
 
-Discussion: 
-- What is the purpose of a BAM index?
 
-# Inspecting Results
+### Inspecting Results
 
 Locate the generated files:
 
@@ -736,28 +695,14 @@ tree results/
 
 ---
 
-> ## What do you observe?
+> ### What do you observe?
 >
 > For every BAM file, there is now a corresponding BAI file.
 {: .callout}
 
 ---
 
-# Discussion
-
-Suppose we processed:
-
-```text
-5 samples
-```
-
-How many indexing tasks executed?
-
-Why?
-
----
-
-> ## Key concept
+> ### Key concept
 >
 > Processes remain independent.
 >
@@ -766,7 +711,7 @@ Why?
 
 ---
 
-# Bringing Everything Together
+## Bringing Everything Together
 
 Over the course of this session, we have built four independent analyses.
 
@@ -774,31 +719,31 @@ Let's revisit the journey.
 
 ---
 
-## Step 1: Quality Control
+### Step 1: Quality Control
 
 ```text
-Merged FASTQs
+    Merged FASTQs
         ↓
       FastQC
         ↓
- FastQC reports
+   FastQC reports
 ```
 
 ---
 
-## Step 2: Alignment
+### Step 2: Alignment
 
 ```text
-Merged FASTQs
+    Merged FASTQs
         ↓
      BWA-MEM
         ↓
-        SAM
+       SAM
 ```
 
 ---
 
-## Step 3: Sorting
+### Step 3: Sorting
 
 ```text
 SAM
@@ -810,7 +755,7 @@ BAM
 
 ---
 
-## Step 4: Indexing
+### Step 4: Indexing
 
 ```text
 BAM
@@ -821,7 +766,7 @@ BAI
 ```
 ---
 
-# Demo 5: Constructing a Workflow
+### Demo 5: Constructing a Workflow
 
 Individually, these processes are useful.
 
@@ -830,17 +775,17 @@ Together, they become a workflow.
 Conceptually:
 
 ```text
-Merged FASTQs
+    Merged FASTQs
         ↓
       FastQC
 
-Merged FASTQs
+    Merged FASTQs
         ↓
      BWA-MEM
         ↓
- samtools sort
+    samtools sort
         ↓
- samtools index
+    samtools index
 ```
 
 Notice that:
@@ -848,9 +793,13 @@ Notice that:
 - FastQC operates independently,
 - the alignment branch forms a linear pipeline.
 
+---
+
 Create `main.nf`
 
 Reuse the processes developed in the earlier demos.
+
+---
 
 ```nextflow
 workflow {
@@ -865,7 +814,7 @@ workflow {
 }
 ```
 
-# Running the Complete Workflow
+### Running the Complete Workflow
 
 Execute:
 
@@ -873,11 +822,9 @@ Execute:
 nextflow run main.nf
 ```
 
-Use a small subset of samples if necessary.
-
 ---
 
-# Inspecting Workflow Execution
+### Inspecting workflow execution
 
 Explore:
 ```bash
@@ -908,9 +855,9 @@ tree results/
 
 ---
 
-# Session 3 Exercises
+## Session 3 Exercises
 
-## Exercise 8
+### Exercise 4
 
 Draw the workflow developed during this session.
 
@@ -922,58 +869,42 @@ Label:
 
 ---
 
-## Exercise 9
+### Exercise 5
 
-Match each file type to the process that produces it.
+For each file type, state the process that produces it.
 
 | File type | Process |
 |------------|----------|
-| FastQC HTML | |
-| SAM | |
-| BAM | |
-| BAI | |
+| FastQC HTML |         |
+| SAM         |         |
+| BAM         |         |
+| BAI         |         |
 
 ---
 
-## Exercise 10
+### Exercise 6
 
-Explain the difference between:
-
-```text
-SAM
-```
-
-and
-
-```text
-BAM
-```
+Explain the difference between `SAM` and `BAM`
 
 ---
 
-## Exercise 11
+### Exercise 7
 
-Which process requires a reference genome?
-
-Why?
+Which process requires a reference genome? and Why?
 
 ---
 
-## Exercise 12
+### Exercise 8
 
-Suppose a new sample appears in the input channel.
-
-What changes would you need to make to the workflow?
+Suppose a new sample appears in the input channel. What changes would you need to make to the workflow?
 
 Explain your reasoning.
 
 ---
 
-## Exercise 13
+### Exercise 9
 
-Suppose the workflow receives 100 samples.
-
-How many tasks will execute in total?
+Suppose the workflow receives 100 samples. How many tasks will execute in total?
 
 Assume:
 
@@ -986,7 +917,7 @@ all operate on every sample.
 
 ---
 
-# Summary
+## Summary
 
 Today we learned that:
 
@@ -998,7 +929,7 @@ Today we learned that:
 
 ---
 
-# Looking Ahead
+### Looking Ahead
 
 In Session 4, we will focus on making workflows:
 
@@ -1026,23 +957,5 @@ These features will bring our toy workflow closer to the real-world MalariaGEN p
 
 ---
 
-# Key Message
 
-> Channels carry data.
->
-> Processes perform work.
->
-> Workflows connect them together.
->
-> Reproducible analyses emerge from the combination of all three.
 ````
-
-## Summary
-
--   Processes define computational tasks.
--   Channels connect processes together.
--   Outputs from one process become inputs to another.
--   Complex workflows are built incrementally from simple components.
-
-> Channels carry data. Processes perform work. Workflows connect them
-> together.
