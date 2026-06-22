@@ -73,7 +73,7 @@ We learned how to make workflows reproducible via:
 
 ---
 
-#### What We Built
+#### What we built
 
 Recall our training workflow.
 
@@ -174,7 +174,130 @@ Conceptually:
 {: .discussion}
 
 ---
+### Anatomy of a DSL2 repository
 
+Before diving into individual files, it is useful to understand the overall structure of a modern DSL2 repository.
+
+Most production Nextflow pipelines are organized into a small number of directories, each with a specific purpose.
+
+For the MalariaGEN SNP genotyping pipeline, the repository structure looks approximately like:
+
+```text
+vector_observatory_SNP_calling_nf/
+
+├── main.nf
+├── workflows/
+├── modules/
+├── bin/
+├── validation_scripts/
+│
+├── snp_genotyping_vector.gambiae.config
+│
+└── README.md
+```
+
+At first glance, this may seem intimidating. However, each component has a clearly defined role.
+
+#### `main.nf`
+
+The pipeline entry point.
+
+This is the first file we typically inspect when approaching a new repository because it describes the overall workflow architecture and how major analysis stages connect together.
+
+Think of `main.nf` as the table of contents of a book.
+
+---
+
+#### `workflows/`
+
+Contains high-level workflow definitions.
+
+These workflows combine multiple modules into larger analysis stages.
+
+Examples include:
+
+* Mapping
+* Mapping statistics
+* SNP genotyping
+
+Think of workflows as chapters in the book.
+
+---
+
+#### `modules/`
+
+Contains individual analysis tasks.
+
+Examples might include:
+
+* read alignment
+* duplicate marking
+* variant calling
+* VCF indexing
+
+Modules are the smallest reusable building blocks of the pipeline.
+
+Think of modules as individual paragraphs that perform one specific task.
+
+---
+
+#### `bin/`
+
+Contains helper scripts used by the pipeline.
+
+These may be written in Bash, Python, R, or other languages and are often used for specialized processing steps that are easier to implement outside of Nextflow itself.
+
+---
+
+#### Configuration Files
+
+Examples:
+
+```text
+snp_genotyping_vector.gambiae.config
+snp_genotyping_vector.funestus.config
+```
+
+These files define:
+
+* parameters
+* resources
+* containers
+* execution settings
+* profiles
+
+Importantly, they do not define analysis logic.
+
+This separation allows the same workflow to run in different environments without modifying the workflow code.
+
+---
+
+#### README.md
+
+Usually the best place to start when using a new pipeline.
+
+The README typically describes:
+
+* pipeline purpose
+* required inputs
+* outputs
+* execution commands
+* software requirements
+
+Whenever you encounter a new repository, reading the README first can save a great deal of time.
+
+> ## Key Point
+>
+> When approaching a new DSL2 repository, resist the temptation to inspect files randomly.
+>
+> Instead, build a mental map:
+>
+> `README → main.nf → workflows → modules → configs`
+>
+> This approach makes large repositories much easier to understand.
+> {: .callout}
+
+---
 ### Where should we start?
 
 When faced with a new repository, many people immediately begin opening random files.
@@ -572,5 +695,97 @@ In this section, we learned that:
 - Configuration files control execution.
 - Profiles adapt pipelines to different environments.
 - Real genomics pipelines are built from the same building blocks we have already learned.
+
+---
+## Looking Ahead
+
+In this session, we learned how to navigate and understand a production genomics pipeline.
+
+We examined:
+
+* the repository structure,
+* workflow architecture,
+* configuration files,
+* execution profiles,
+* and major outputs.
+
+Importantly, we saw that production pipelines are not built from entirely new concepts.
+
+Instead, they are built from the same concepts we have been using throughout this course:
+
+```text
+Channels
+    ↓
+Processes
+    ↓
+Workflows
+    ↓
+Configs
+    ↓
+Profiles
+```
+
+assembled at a much larger scale.
+
+However, understanding a pipeline is only the first step.
+
+The next challenge is to:
+
+* run the pipeline successfully,
+* adapt it to local infrastructure,
+* troubleshoot failures,
+* modify execution settings,
+* deploy it on shared compute resources,
+* and interpret the resulting outputs.
+
+These are the skills required to support genomics analyses in real research environments.
+
+### From training to practice
+
+Our journey so far has been:
+
+```text
+Session 1
+Running workflows
+
+        ↓
+
+Session 2
+Working with data
+
+        ↓
+
+Session 3
+Building workflows
+
+        ↓
+
+Session 4
+Reproducibility and execution
+
+        ↓
+
+Session 5
+Understanding a production pipeline
+```
+
+The next stage is to put these concepts into practice by working directly with the MalariaGEN SNP genotyping pipeline.
+
+Potential activities include:
+
+* adapting the pipeline for laptop execution,
+* running the pipeline on CRID HPC,
+* troubleshooting and debugging failed runs,
+* examining workflow reports and logs,
+* and interpreting quality-control and variant-calling outputs.
+
+By this point, you should have the foundation necessary to begin working with real production genomics workflows and to understand how they can be adapted to meet local research needs.
+
+> ## Final take-home message
+>
+> Production pipelines may appear complex, but they are built from the same fundamental concepts we have learned throughout this course.
+>
+> The challenge is no longer learning new syntax—it is learning how to apply those concepts to real-world analyses.
+> {: .callout}
 
 ---
