@@ -110,6 +110,29 @@ It simply contains:
 
 ---
 
+### Why study a production pipeline?
+
+In the previous sessions, we built a small workflow from scratch. That workflow was intentionally simple so that we could focus on learning Nextflow concepts.
+
+However, most researchers do not spend their time writing pipelines from scratch. More commonly, they:
+- run existing pipelines
+- adapt pipelines to local infrastructure
+- troubleshoot failed analyses
+- change parameters and references
+- add or remove workflow stages
+- interpret outputs
+
+The goal of today's lesson is therefore not to memorize the MalariaGEN SNP genotyping pipeline. Instead, the goal is to learn how to navigate and reason about a large production workflow using concepts that you already understand.
+
+> ## Discussion
+>
+> Think about a bioinformatics analysis you have run previously.
+> Did you build the workflow yourself, or did you use an existing workflow developed by someone else?
+> What modifications did you have to make before you could run it successfully?
+{: .discussion}
+
+---
+
 ### Pipeline Architecture
 
 The top-level workflow is defined in: `main.nf`
@@ -152,11 +175,49 @@ Conceptually:
 
 ---
 
+### Where should we start?
+
+When faced with a new repository, many people immediately begin opening random files.
+
+This approach rarely works.
+
+Instead, experienced Nextflow users typically begin by identifying:
+
+- the entry point
+- the major workflows
+- the configuration files
+- the expected inputs and outputs
+
+This provides a mental map of the pipeline before examining implementation details.
+
+For most DSL2 repositories, the entry point is:
+`main.nf`
+
+Just as a scientific paper is easier to understand if you first read the abstract, a pipeline is easier to understand if you first read the top-level workflow.
+
+---
+
 ### Demo 1: Exploring main.nf
 
 Open:
 
 less `main.nf`
+
+---
+
+#### From training workflow to production workflow
+
+Recall the workflow we built during Session 3:
+
+```text
+FASTQ -> FastQC -> BWA -> Sort -> Index
+```
+
+This workflow performed alignment and generated indexed BAM files.
+
+The MalariaGEN pipeline performs exactly the same task, but it also incorporates additional quality-control and post-processing steps that are necessary for large-scale population genomics analyses.
+
+As a result, what appeared as a single "alignment stage" in our training workflow becomes an entire workflow in the production pipeline.
 
 ---
 
@@ -202,6 +263,22 @@ fix_mate_information
 
 ---
 
+### Looking for familiar concepts
+
+One common misconception could be that production pipelines use completely different Nextflow features from those encountered in training materials.
+
+In reality, the same small collection of channel operations appears repeatedly in production workflows.
+
+As we inspect the code, look for familiar operations such as:
+- `map()`
+- `join()`
+- `concat()`
+- `filter()`
+
+These are the same operations we used when grouping lane-level FASTQ files and constructing channels from the samplesheet.
+
+Recognizing familiar patterns in unfamiliar code is an important skill for working with large pipelines.
+
 ### Channel Operations in Production
 
 Observe:
@@ -221,6 +298,26 @@ Find one example of:
 - `concat()`
 
 Explain what the operation is doing.
+
+---
+
+### From Alignment to biological interpretation
+
+Up to this point, the workflow has focused on preparing sequencing reads for downstream analysis.
+
+The purpose of the genotyping workflow is different.
+
+Rather than transforming sequencing data into aligned reads, it transforms aligned reads into analysis-ready data:
+
+```text
+  Aligned Reads
+        ↓
+  Variant Calls
+        ↓
+  Analysis-ready genomic data
+```
+
+This transition—from sequencing data -> analysis-ready data is where much of the scientific value of the pipeline is generated
 
 ---
 
@@ -286,6 +383,27 @@ Trace the path of one sample through the genotyping workflow. What files are pro
 
 ---
 
+### Separating logic from execution
+
+During Session 4, we discussed one of the most important design principles in modern workflow systems:
+
+Workflow logic should be separated from workflow execution.
+
+This principle becomes increasingly important as workflows become larger and are shared among multiple institutions.
+
+Imagine a workflow that must run:
+
+- on a laptop
+- on a university cluster,
+- on cloud infrastructure,
+- and at CRID.
+
+The analysis logic should remain unchanged.
+
+Only the execution settings should change.
+
+Configuration files allow us to achieve this separation.
+
 ### Demo 4: Understanding Configuration files
 
 Open:
@@ -334,6 +452,23 @@ Find one process that requests:
 
 ---
 
+### Running a production workflow
+
+After understanding the repository structure, the next question is:
+
+- How do we actually run the pipeline?
+
+Most production workflows are launched using a single command that combines:
+
+- the workflow entry point,
+- a configuration file,
+- one or more parameters,
+- and an execution profile.
+
+By this stage of the course, every component of the command should be familiar.
+
+The challenge is no longer understanding the syntax — it is understanding how the pieces fit together.
+
 ### Demo 5: Running the Pipeline
 
 Examine a typical command:
@@ -349,6 +484,32 @@ nextflow run main.nf \
 >
 > Which concepts from Sessions 3 and 4 can you identify in this command?
 {: .discussion}
+
+---
+
+### Understanding pipeline outputs
+
+A common mistake among new workflow users is to focus exclusively on successful execution.
+
+In practice, the outputs are usually more important than the workflow itself.
+
+Before running a production workflow, it is helpful to know:
+
+- which files will be produced,
+- where they will be written,
+- which files are intended for downstream analysis,
+- which files are intended for quality control,
+- and which files are primarily useful for troubleshooting.
+
+For the MalariaGEN SNP genotyping pipeline, major outputs include:
+
+- Mapped BAMs
+- VCFs
+- Callable loci
+- Zarr datasets
+- QC reports
+
+As users and future maintainers of the pipeline, you should become comfortable identifying where these outputs are generated and how they are used in subsequent analyses.
 
 ---
 
@@ -375,6 +536,31 @@ Include:
 - Genotyping
 - VCF generation
 - Zarr conversion
+
+---
+
+### When things go wrong: troubleshooting a production pipeline
+
+Production workflows rarely run successfully the first time on a new system.
+
+Common issues include:
+
+- missing references,
+- incorrect file paths,
+- missing containers,
+- insufficient resources,
+- scheduler configuration problems,
+- incompatible software versions.
+
+When a workflow fails, experienced users typically ask:
+
+- Did the workflow start?
+- Which process failed?
+- What command was executed?
+- What do the logs report?
+- Was the failure caused by the workflow or the execution environment?
+
+These troubleshooting skills are often more valuable than the ability to write new workflow code.
 
 ---
 
