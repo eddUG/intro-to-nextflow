@@ -33,27 +33,36 @@ Today we will examine a real production pipeline: MalariaGEN Alignment & SNP Gen
 Our goal is not to understand every line of code.
 Our goal is to recognize familiar concepts operating at a larger scale.
 
+---
+
 ### Recap: The Journey So Far
-#### Session 2
+"[Session 2 ]({{ page.root }}/02-working-with-data)"
 
 We learned how to structure sequencing data.
 
+```text
   samplesheet
       ↓
   channels
+```
 
+---
 
-#### Session 3
+"[Session 3 ]({{ page.root }}/03_building-workflows)"
 
 We learned how to describe computational work.
 
+```text
   channels
       ↓
   processes
       ↓
   workflows
+```
 
-#### Session 4
+---
+
+"[Session 4 ]({{ page.root }}/04_reproducibility)"
 
 We learned how to make workflows reproducible via:
 - parameters
@@ -62,19 +71,23 @@ We learned how to make workflows reproducible via:
 - containers
 - resume
 
+---
+
 #### What We Built
 
 Recall our training workflow.
 
-FASTQ
-  ↓
-FastQC
-  ↓
-BWA-MEM
-  ↓
+```text
+  FASTQ
+    ↓
+  FastQC
+    ↓
+  BWA-MEM
+    ↓
 samtools sort
-  ↓
+    ↓
 samtools index
+```
 
 This workflow contained:
 - channels,
@@ -83,7 +96,9 @@ This workflow contained:
 - parameters,
 - configuration files.
 
-#### What We Will Explore Today
+---
+
+#### What we will explore in this session
 
 The MalariaGEN SNP genotyping pipeline contains the same ideas.
 
@@ -93,12 +108,15 @@ It simply contains:
 - More QC
 - More automation
 
+---
+
 ### Pipeline Architecture
 
 The top-level workflow is defined in: `main.nf`
 
 Conceptually:
 
+```text
                      main.nf
                          |
         +----------------+----------------+
@@ -124,6 +142,7 @@ Conceptually:
         v
 
       Zarr
+```
 
 > ## Discussion
 >
@@ -131,6 +150,7 @@ Conceptually:
 > How is it similar? 
 {: .discussion}
 
+---
 
 ### Demo 1: Exploring main.nf
 
@@ -138,58 +158,59 @@ Open:
 
 less `main.nf`
 
-###Demo 2: Understanding the Mapping Workflow
+---
+
+### Demo 2: Understanding the Mapping workflow
 
 Open:
 
 less `workflows/mapping.nf`
 
+---
 
-### Mapping Workflow Structure
+### Mapping workflow structure
 
 Conceptually:
 
-Input BAM
+```text
+  Input BAM
      |
      v
-bam_to_fastq
+  bam_to_fastq
      |
      v
-
   FASTQs
      |
      v
-
 read_alignment
      |
      v
-
 alignment_post_processing
      |
      v
-
 mark_duplicates
      |
      v
-
 indel_realigner
      |
      v
-
 fix_mate_information
      |
      v
+  mapped BAM
+```
 
-mapped BAM
-
+---
 
 ### Channel Operations in Production
 
 Observe:
 
-join()
-map()
-concat()
+- `join()`
+- `map()`
+- `concat()`
+
+---
 
 #### Exercise 1
 
@@ -201,6 +222,7 @@ Find one example of:
 
 Explain what the operation is doing.
 
+---
 
 ### Demo 3: Understanding the genotyping workflow
 
@@ -208,7 +230,9 @@ Open:
 
 less `workflows/genotyping.nf`
 
-#### Workflow Inputs
+---
+
+#### Workflow inputs
 
 Observe:
 
@@ -217,15 +241,17 @@ take:
     reference_genome
     alleles_vcf
 
+---
 
-#### Variant Calling Pipeline
+#### Variant Calling pipeline
 
 Conceptually:
 
-Mapped BAMs
+```text
+  Mapped BAMs
       |
       v
-Unified Genotyper
+  Unified Genotyper
       |
       v
      VCF
@@ -234,7 +260,8 @@ Unified Genotyper
    VCF Index
       |
       v
-  VCF → Zarr
+   VCF → Zarr
+```
 
 > ## Discussion
 >
@@ -242,25 +269,30 @@ Unified Genotyper
 > What is the major output?
 {: .discussion}
 
+---
 
 #### Channel Transformations
 
 Observe:
 
-- .map {
+- `.map {`
+- `.filter {`
 
-- .filter {
+---
 
 #### Exercise 2
 
 Trace the path of one sample through the genotyping workflow. What files are produced?
 
+---
 
-### Demo 4: Understanding Configuration Files
+### Demo 4: Understanding Configuration files
 
 Open:
 
 less `snp_genotyping_vector.gambiae.config`
+
+---
 
 #### Parameters
 
@@ -268,23 +300,30 @@ Observe:
 
 `params {`
 
+---
+
 #### Profiles
 
 Observe:
 
 `profiles {`
 
+---
 
 > ## Discussion
 >
 > Why might a laptop use Docker while a cluster uses Singularity?
 {: .discussion}
 
+---
+
 ### Process Resources
 
 Observe:
 
 `withName:read_alignment`
+
+---
 
 #### Exercise 3
 
@@ -311,6 +350,7 @@ nextflow run main.nf \
 > Which concepts from Sessions 3 and 4 can you identify in this command?
 {: .discussion}
 
+---
 
 #### Exercise 4: Repository hunt
 
@@ -323,7 +363,9 @@ Locate:
 - A container definition
 - A executor definition
 
-#### Exercise 5: Architecture Interpretation
+---
+
+#### Exercise 5: Architecture interpretation
 
 Using the diagrams from tHISs session: Draw the path taken by a FASTQ file from input to final variant output.
 
@@ -346,5 +388,3 @@ In this section, we learned that:
 - Real genomics pipelines are built from the same building blocks we have already learned.
 
 ---
-
-````
